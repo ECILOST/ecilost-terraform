@@ -34,8 +34,8 @@ Front Door, RabbitMQ (CloudAMQP) ni PostgreSQL (Neon) en Azure: ambos externos, 
 
 ## Secretos
 
-Nunca en Git. Cada raiz lee los suyos de `*.auto.tfvars` (ignorado por `.gitignore`); ver los
-`*.example.tfvars`. Terraform genera por ambiente el par
+Nunca en Git ni en carpetas sincronizadas (OneDrive). Cada ambiente los lee de un archivo
+fuera del repo, pasado con `-var-file`; ver `environments/<env>/secrets.example.tfvars`. Terraform genera por ambiente el par
 RS256 de los JWT y `COOKIE_SECRET`. Quedan en el state, que vive en un blob privado.
 
 ## Orden de ejecucion
@@ -47,12 +47,14 @@ cd bootstrap && terraform init && terraform apply
 terraform init -migrate-state
 
 # 2. Ambientes (requiere imagenes publicadas en ghcr.io/ecilost con tag develop / main)
-cd ../environments/dev && cp secrets.example.tfvars secrets.auto.tfvars   # rellenar
-terraform init && terraform apply
+cd ../environments/dev
+terraform init
+terraform plan  -var-file=$HOME/.ecilost-secrets/dev.tfvars -out=dev.tfplan
+terraform apply dev.tfplan
 
 # 3. Migraciones de cada servicio
 az containerapp job start -g rg-EciLost -n ecilost-auth-dev-migrate
 ```
 
 Para una prueba completa en dev (consumidores AMQP y schedulers activos):
-`terraform apply -var min_replicas=1`; al terminar, `terraform apply` para volver a 0.
+`terraform apply -var-file=... -var min_replicas=1`; al terminar, sin `-var min_replicas` para volver a 0.

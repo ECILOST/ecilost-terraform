@@ -1,4 +1,4 @@
-# Copiar a secrets.auto.tfvars (no se versiona: *.tfvars esta en .gitignore) y rellenar.
+# Copiar FUERA del repo (p. ej. ~/.ecilost-secrets/<env>.tfvars) y pasarlo con -var-file.
 # Nunca pegar estos valores en issues, PRs ni chats.
 
 # Dominio del proyecto Vercel de ESTE ambiente, sin barra final.
