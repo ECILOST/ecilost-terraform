@@ -13,16 +13,6 @@ output "service_urls" {
   }
 }
 
-output "migration_jobs" {
-  value = {
-    auth       = module.auth.migration_job_name
-    catalog    = module.catalog.migration_job_name
-    wallet     = module.wallet.migration_job_name
-    auction    = module.auction.migration_job_name
-    engagement = module.engagement.migration_job_name
-  }
-}
-
 output "container_app_names" {
   value = {
     auth       = module.auth.name

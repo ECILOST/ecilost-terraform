@@ -15,6 +15,7 @@ resource "azurerm_container_app" "this" {
   resource_group_name          = var.resource_group_name
   container_app_environment_id = var.container_app_environment_id
   revision_mode                = "Single"
+  workload_profile_name        = "Consumption"
   tags                         = var.tags
 
   identity {
@@ -31,9 +32,11 @@ resource "azurerm_container_app" "this" {
   }
 
   ingress {
-    external_enabled           = true
-    target_port                = var.port
-    transport                  = "auto"
+    external_enabled = true
+    target_port      = var.port
+    # "http" (HTTP/1.1) es lo que guarda el modo Express; admite el upgrade a WebSocket
+    # que usa Socket.IO en engagement.
+    transport                  = "http"
     allow_insecure_connections = false
 
     traffic_weight {
@@ -83,7 +86,16 @@ resource "azurerm_container_app" "this" {
   }
 
   lifecycle {
-    ignore_changes = [template[0].container[0].image]
+    # La imagen la despliega la CI. El resto lo administra el modo "Express" del
+    # environment (sin pesos de trafico, escalado HTTP propio) y Terraform no debe pelearlo.
+    ignore_changes = [
+      template[0].container[0].image,
+      template[0].container[0].liveness_probe,
+      template[0].cooldown_period_in_seconds,
+      template[0].polling_interval_in_seconds,
+      template[0].http_scale_rule,
+      ingress[0].traffic_weight,
+    ]
   }
 }
 

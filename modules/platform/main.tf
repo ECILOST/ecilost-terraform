@@ -22,7 +22,10 @@ locals {
     schema => "${var.database_url}${strcontains(var.database_url, "?") ? "&" : "?sslmode=require&"}schema=${schema}"
   }
 
-  prisma_migrate = ["npx", "prisma", "migrate", "deploy"]
+  # Sin jobs de migracion: Azure crea el environment en modo "Express", que no admite
+  # Container Apps Jobs (ExpressEnvironmentResourceNotSupported). Las migraciones se
+  # ejecutan fuera (ver README). El modulo compute conserva la opcion.
+  prisma_migrate = null
 
   image = { for svc in ["auth", "catalog", "wallet", "auction", "engagement"] :
     svc => "${var.image_registry}/ecilost-${svc}-service:${var.image_tag}"
@@ -37,6 +40,13 @@ resource "azurerm_container_app_environment" "this" {
   location                   = var.location
   log_analytics_workspace_id = var.log_analytics_workspace_id
   tags                       = local.tags
+
+  # Perfil Consumption (pago por uso, sin nodos dedicados). Azure lo crea igual; declararlo
+  # evita que cada plan intente quitarlo.
+  workload_profile {
+    name                  = "Consumption"
+    workload_profile_type = "Consumption"
+  }
 }
 
 resource "azurerm_storage_container" "media" {

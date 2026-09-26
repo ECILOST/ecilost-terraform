@@ -24,7 +24,6 @@ modules/
 |---|---|---|
 | Container Apps Environment | `cae-ecilost-<env>` | Consumption, logs al workspace existente |
 | Container Apps | `ecilost-{auth,catalog,wallet,auction,engagement}-<env>` | 0.25 vCPU / 0.5 GiB, max 1 replica |
-| Container Apps Jobs | `ecilost-<svc>-<env>-migrate` | Manuales, `npx prisma migrate deploy` |
 | User-assigned identity | `id-ecilost-<env>` | Blob Data Contributor solo en su contenedor |
 | Blob container | `catalog-media-<env>` | Privado, lectura por SAS |
 | Base PostgreSQL | proyecto Neon del ambiente | Un schema por servicio (`?schema=`) |
@@ -52,8 +51,9 @@ terraform init
 terraform plan  -var-file=$HOME/.ecilost-secrets/dev.tfvars -out=dev.tfplan
 terraform apply dev.tfplan
 
-# 3. Migraciones de cada servicio
-az containerapp job start -g rg-EciLost -n ecilost-auth-dev-migrate
+# 3. Migraciones: desde cada repo de servicio, con la database_url del ambiente
+#    y el schema del servicio (auth, catalog, wallet, auction; engagement usa public)
+DATABASE_URL="<database_url>&schema=auth" npx prisma migrate deploy
 ```
 
 Para una prueba completa en dev (consumidores AMQP y schedulers activos):
