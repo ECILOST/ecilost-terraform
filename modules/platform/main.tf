@@ -17,9 +17,14 @@ locals {
 
   # Una base por ambiente y un schema por servicio: el `?schema=` de DATABASE_URL es como
   # cada servicio ya aisla sus tablas (y como Prisma sabe donde migrar).
+  #
+  # `options=-c search_path=<schema>` hace lo mismo para el SQL crudo (`$queryRaw`), que no
+  # pasa por el `schema` del adaptador de Prisma: auction escribe `UPDATE "rooms"` sin
+  # calificar. En local funcionaba porque el usuario se llamaba igual que el schema y el
+  # search_path por defecto es "$user", public; con el usuario de Neon falla con 42P01.
   database_url = {
     for schema in ["auth", "catalog", "wallet", "auction", "public"] :
-    schema => "${var.database_url}${strcontains(var.database_url, "?") ? "&" : "?sslmode=require&"}schema=${schema}"
+    schema => "${var.database_url}${strcontains(var.database_url, "?") ? "&" : "?sslmode=require&"}schema=${schema}&options=-c%20search_path%3D${schema}"
   }
 
   # Sin jobs de migracion: Azure crea el environment en modo "Express", que no admite
