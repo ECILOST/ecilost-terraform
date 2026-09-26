@@ -108,8 +108,10 @@ module "auth" {
     ACCESS_TOKEN_TTL_SECONDS  = "900"
     REFRESH_TOKEN_TTL_SECONDS = "604800"
     COOKIE_SECURE             = "true"
-    POST_LOGIN_REDIRECT_URL   = "${var.frontend_url}/items"
-    POST_LOGIN_ERROR_URL      = "${var.frontend_url}/login"
+    # /rooms y no /items: es el destino que el frontend reserva para volver del login
+    # (src/app/routes.ts) y lleva a la portada de cualquiera de los dos roles.
+    POST_LOGIN_REDIRECT_URL = "${var.frontend_url}/rooms"
+    POST_LOGIN_ERROR_URL    = "${var.frontend_url}/login"
   }
 
   secret_env = {
