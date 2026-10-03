@@ -247,6 +247,8 @@ module "engagement" {
     AUTH_JWKS_URL = local.jwks_url
     JWT_ISSUER    = local.jwt_issuer
     JWT_AUDIENCE  = local.jwt_audience
+    # room.join le pregunta a auction si la sala existe y si quien la pide puede verla.
+    AUCTION_SERVICE_URL = module.auction.url
   }
 
   secret_env = {
