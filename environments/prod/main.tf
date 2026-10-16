@@ -28,8 +28,10 @@ terraform {
 locals {
   environment = "prod"
 
-  # Siempre encendido: los consumidores AMQP y los schedulers de auction deben correr.
-  default_min_replicas = 1
+  # Pago por uso, igual que dev: en reposo no cuesta, y Neon (plan gratuito) puede suspender
+  # la base porque nada la consulta. Los consumidores AMQP y los schedulers de auction solo
+  # corren mientras haya trafico. Para una demo: terraform apply -var min_replicas=1.
+  default_min_replicas = 0
   image_tag            = "main"
 }
 

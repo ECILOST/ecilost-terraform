@@ -8,7 +8,7 @@ regiones y es la mas cercana a CloudAMQP (`ca-central-1`).
 bootstrap/            Storage Account `stecilost` + contenedor `tfstate` (state local -> migrado)
                       (PostgreSQL en Neon, externo: ver modules/databases)
 environments/dev      Ambiente dev  (bajo demanda: min_replicas = 0)
-environments/prod     Ambiente prod (siempre encendido: min_replicas = 1)
+environments/prod     Ambiente prod (pago por uso: min_replicas = 0)
 environments/staging  Reservado, sin recursos
 modules/
   platform/           Un ambiente completo; dev y prod lo llaman con distintos valores
