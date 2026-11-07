@@ -100,3 +100,10 @@ variable "tags" {
   type    = map(string)
   default = {}
 }
+
+variable "mongodb_uri" {
+  description = "Cadena de conexion de MongoDB Atlas para la gamificacion de engagement. Vacia: sin gamificacion."
+  type        = string
+  sensitive   = true
+  default     = ""
+}

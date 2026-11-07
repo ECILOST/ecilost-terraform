@@ -249,10 +249,16 @@ module "engagement" {
     JWT_AUDIENCE  = local.jwt_audience
     # room.join le pregunta a auction si la sala existe y si quien la pide puede verla.
     AUCTION_SERVICE_URL = module.auction.url
+    # Gamificacion: una base por ambiente dentro del mismo cluster de Atlas.
+    MONGODB_DB = "ecilost_engagement_${var.environment}"
   }
 
-  secret_env = {
-    DATABASE_URL = local.database_url["public"]
-    RABBITMQ_URL = var.rabbitmq_url
-  }
+  # MONGODB_URI es opcional: sin ella engagement arranca sin gamificacion (503 en /profiles/me).
+  secret_env = merge(
+    {
+      DATABASE_URL = local.database_url["public"]
+      RABBITMQ_URL = var.rabbitmq_url
+    },
+    var.mongodb_uri == "" ? {} : { MONGODB_URI = var.mongodb_uri },
+  )
 }

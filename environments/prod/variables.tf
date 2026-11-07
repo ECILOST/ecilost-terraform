@@ -72,3 +72,10 @@ variable "database_url" {
   type        = string
   sensitive   = true
 }
+
+variable "mongodb_uri" {
+  description = "MongoDB Atlas (gamificacion). Vacia: engagement arranca sin perfil ni top semanal."
+  type        = string
+  sensitive   = true
+  default     = ""
+}

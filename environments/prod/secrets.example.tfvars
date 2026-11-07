@@ -18,3 +18,7 @@ rabbitmq_url = "amqps://<usuario>:<password>@<host>/<vhost>"
 
 # Neon > proyecto de este ambiente > Connect, con "Connection pooling" DESACTIVADO.
 database_url = "postgresql://<usuario>:<password>@ep-xxxx.<region>.aws.neon.tech/neondb?sslmode=require"
+
+# MongoDB Atlas > Connect > Drivers (gamificacion de engagement). Opcional: vacia, sin perfil
+# ni top semanal. En Atlas > Network Access hay que permitir la salida de los Container Apps.
+mongodb_uri = "mongodb+srv://<usuario>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority"

@@ -70,6 +70,7 @@ module "platform" {
   staff_emails         = var.staff_emails
   rabbitmq_url         = var.rabbitmq_url
   database_url         = var.database_url
+  mongodb_uri          = var.mongodb_uri
 
   tags = var.tags
 }
