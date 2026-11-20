@@ -1,8 +1,6 @@
 # ECILOST Terraform
 
-Infraestructura Azure de ECI Lost en `rg-EciLost` (suscripcion Azure for Students
-`fbca1ee8-...`), region **canadacentral**: la politica de la suscripcion solo admite cinco
-regiones y es la mas cercana a CloudAMQP (`ca-central-1`).
+Infraestructura Azure de ECI Lost & Auction. Define DEV y PROD en `canadacentral`, con Container Apps para los servicios HTTP, almacenamiento de medios y proveedores externos para PostgreSQL y RabbitMQ.
 
 ```text
 bootstrap/            Storage Account `stecilost` + contenedor `tfstate` (state local -> migrado)
@@ -36,6 +34,20 @@ Front Door, RabbitMQ (CloudAMQP) ni PostgreSQL (Neon) en Azure: ambos externos, 
 Nunca en Git ni en carpetas sincronizadas (OneDrive). Cada ambiente los lee de un archivo
 fuera del repo, pasado con `-var-file`; ver `environments/<env>/secrets.example.tfvars`. Terraform genera por ambiente el par
 RS256 de los JWT y `COOKIE_SECRET`. Quedan en el state, que vive en un blob privado.
+
+## Validación local
+
+Desde la raíz, usa los mismos pasos del workflow de CI para validar cada raíz con el backend remoto desactivado.
+
+```bash
+terraform fmt -check -recursive
+for root in bootstrap environments/dev environments/prod; do
+  terraform -chdir="$root" init -backend=false -input=false
+  terraform -chdir="$root" validate
+done
+```
+
+Después de inicializar un ambiente desplegado, `terraform output service_urls` muestra los destinos de Auth, Catalog, Wallet, Auction y Engagement que usa el frontend. Auth y Catalog publican su Swagger bajo `/docs` en la URL de su servicio.
 
 ## Orden de ejecucion
 
