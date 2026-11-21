@@ -61,8 +61,9 @@ module "platform" {
   storage_account_name       = data.azurerm_storage_account.shared.name
   storage_blob_endpoint      = data.azurerm_storage_account.shared.primary_blob_endpoint
 
-  image_tag    = local.image_tag
-  min_replicas = coalesce(var.min_replicas, local.default_min_replicas)
+  image_tag             = local.image_tag
+  min_replicas          = coalesce(var.min_replicas, local.default_min_replicas)
+  http_service_replicas = 2
 
   frontend_url         = var.frontend_url
   google_client_id     = var.google_client_id

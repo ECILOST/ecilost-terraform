@@ -59,6 +59,12 @@ variable "min_replicas" {
   type        = number
 }
 
+variable "http_service_replicas" {
+  description = "Cantidad fija de réplicas de Auth, Catalog, Wallet y Auction. Null conserva los límites normales de la plataforma."
+  type        = number
+  default     = null
+}
+
 variable "frontend_url" {
   description = "Origen publico del frontend en Vercel para este ambiente, sin barra final."
   type        = string

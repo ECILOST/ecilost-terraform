@@ -97,7 +97,8 @@ module "auth" {
   image                        = local.image["auth"]
   port                         = 3000
   health_path                  = "/health"
-  min_replicas                 = var.min_replicas
+  min_replicas                 = coalesce(var.http_service_replicas, var.min_replicas)
+  max_replicas                 = coalesce(var.http_service_replicas, 1)
   migration_command            = local.prisma_migrate
   tags                         = local.tags
 
@@ -140,7 +141,8 @@ module "catalog" {
   image                        = local.image["catalog"]
   port                         = 3001
   health_path                  = "/"
-  min_replicas                 = var.min_replicas
+  min_replicas                 = coalesce(var.http_service_replicas, var.min_replicas)
+  max_replicas                 = coalesce(var.http_service_replicas, 1)
   migration_command            = local.prisma_migrate
   tags                         = local.tags
 
@@ -175,7 +177,8 @@ module "wallet" {
   image                        = local.image["wallet"]
   port                         = 3002
   health_path                  = "/wallet/health"
-  min_replicas                 = var.min_replicas
+  min_replicas                 = coalesce(var.http_service_replicas, var.min_replicas)
+  max_replicas                 = coalesce(var.http_service_replicas, 1)
   migration_command            = local.prisma_migrate
   tags                         = local.tags
 
@@ -206,7 +209,8 @@ module "auction" {
   identity_id                  = module.identity.id
   image                        = local.image["auction"]
   port                         = 3003
-  min_replicas                 = var.min_replicas
+  min_replicas                 = coalesce(var.http_service_replicas, var.min_replicas)
+  max_replicas                 = coalesce(var.http_service_replicas, 1)
   migration_command            = local.prisma_migrate
   tags                         = local.tags
 
